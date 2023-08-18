@@ -591,8 +591,8 @@ class Curriculum:
             if (
                 course.id in path
                 and len(path) > 2
-                and path[0] != course
-                and path[-1] != course
+                and path[0] != course.id
+                and path[-1] != course.id
             ):
                 cent += len(path)
         course.metrics["centrality"] = cent
