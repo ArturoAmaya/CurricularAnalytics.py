@@ -155,7 +155,8 @@ class Curriculum:
         self.system_type = system_type
         self.institution = institution
         if id == 0:
-            self.id = hash(self.name + self.institution + str(self.degree_type))
+            self.id = hash(self.name + self.institution +
+                           str(self.degree_type))
         else:
             self.id = id
         self.cip = cip
@@ -239,7 +240,8 @@ class Curriculum:
         for lo in self.learning_outcomes:
             if lo.id == id:
                 return lo
-        raise ValueError(f"The lo associated with id {id} is not in the curriculum.")
+        raise ValueError(
+            f"The lo associated with id {id} is not in the curriculum.")
 
     @property
     def total_credits(self) -> float:
@@ -325,7 +327,8 @@ class Curriculum:
         """
         for i, lo in enumerate(self.learning_outcomes):
             self.learning_outcome_graph.add_node(i)
-            lo.vertex_id[self.id] = i  # The vertex id of a course w/in the curriculum
+            # The vertex id of a course w/in the curriculum
+            lo.vertex_id[self.id] = i
             # Graphs.jl orders graph vertices sequentially
             # TODO: make sure course is not alerady in the curriculum
         for lo in self.learning_outcomes:
@@ -382,7 +385,8 @@ class Curriculum:
         for course in self.courses:
             for k, r in course.requisites.items():
                 if r == strict_co:
-                    v_d = self.course_from_id(course.id).id  # destination vertex
+                    v_d = self.course_from_id(
+                        course.id).id  # destination vertex
                     v_s = self.course_from_id(k).id  # source vertex
                     g.add_edge(v_d, v_s)
         new_cycles = nx.simple_cycles(g)
@@ -396,7 +400,8 @@ class Curriculum:
             validity = False
             if self.institution != "":
                 error_msg.write(f"\n{self.institution}: ")
-            error_msg.write(f" curriculum '{self.name}' has requisite cycles:\n")
+            error_msg.write(
+                f" curriculum '{self.name}' has requisite cycles:\n")
             for cyc in cycles:
                 error_msg.write("(")
                 for i, v in enumerate(cyc):
@@ -457,7 +462,8 @@ class Curriculum:
                                         if (
                                             req_type == co or req_type == strict_co
                                         ):  # is u a co or strict_co requisite for n?
-                                            remove = False  # a co or strict_co relationshipo is involved, must keep (u, v)
+                                            # a co or strict_co relationshipo is involved, must keep (u, v)
+                                            remove = False
                                 if remove:
                                     if (
                                         u,
@@ -506,7 +512,8 @@ class Curriculum:
         ```
         where ``G_c = (V,E)`` is the curriculum graph associated with curriculum ``c``.
         """
-        bf: List[int] = [self.blocking_factor_course(course) for course in self.courses]
+        bf: List[int] = [self.blocking_factor_course(
+            course) for course in self.courses]
         b: int = sum(bf)
         self.metrics["blocking factor"] = b, bf
         return b, bf
@@ -543,7 +550,7 @@ class Curriculum:
         where ``G_c = (V,E)`` is the curriculum graph associated with curriculum ``c``.
         """
         g = self.graph
-        df: Dict[int, int] = {course.id: 0 for course in self.courses}
+        df: Dict[int, int] = {course.id: 1 for course in self.courses}
         for path in all_paths(g):
             for vtx in path:
                 path_length = len(
@@ -602,7 +609,8 @@ class Curriculum:
         q(c) = \\sum_{v \\in V} q(v).
         ```
         """
-        cf: List[int] = [self.centrality_course(course) for course in self.courses]
+        cf: List[int] = [self.centrality_course(
+            course) for course in self.courses]
         cent: int = sum(cf)
         self.metrics["centrality"] = cent, cf
         return cent, cf
@@ -716,7 +724,8 @@ class Curriculum:
                 metric = c.metrics[k]
                 maxval = max(metric[1])
                 pos = [i for i, x in enumerate(metric[1]) if x == maxval]
-                report.write(f"   Largest {k} value in C{i} is {maxval} for course: ")
+                report.write(
+                    f"   Largest {k} value in C{i} is {maxval} for course: ")
                 for p in pos:
                     report.write(f"{c.courses[p].name}  ")
                 report.write("\n")
@@ -841,7 +850,8 @@ class Curriculum:
         buf.write(f"  credit hours = {self.credit_hours}\n")
         buf.write(f"  number of courses = {self.num_courses}")
         buf.write("\n  Blocking Factor --\n")
-        buf.write(f"    entire curriculum = {self.metrics['blocking factor'][0]}\n")
+        buf.write(
+            f"    entire curriculum = {self.metrics['blocking factor'][0]}\n")
         buf.write(f"    max. value = {max_bf}, ")
         buf.write("for course(s): ")
         write_course_names(buf, max_bf_courses)
@@ -851,7 +861,8 @@ class Curriculum:
         buf.write("for course(s): ")
         write_course_names(buf, max_cent_courses)
         buf.write("\n  Delay Factor --\n")
-        buf.write(f"    entire curriculum = {self.metrics['delay factor'][0]}\n")
+        buf.write(
+            f"    entire curriculum = {self.metrics['delay factor'][0]}\n")
         buf.write(f"    max. value = {max_df}, ")
         buf.write("for course(s): ")
         write_course_names(buf, max_df_courses)
